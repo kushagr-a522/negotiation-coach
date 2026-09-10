@@ -20,6 +20,8 @@ Two cooperating AI agents:
 - **Frontend:** React (Vite), JavaScript
 - **Hosting:** Render (backend), Vercel (frontend) - fully free tier
 
+---
+
 ## Features
 - Live chat-style negotiation with an AI opponent
 - Real-time "tactics meter" scoring 4 negotiation skills
@@ -32,11 +34,19 @@ Two cooperating AI agents:
 
 ### Backend
 \```bash
+
 cd backend
+
 python -m venv venv
-venv\Scripts\activate        # Mac/Linux: source venv/bin/activate
+
+venv\Scripts\activate        # Mac/Linux: source 
+
+venv/bin/activate
+
 pip install -r requirements.txt
+
 # create a .env file with: GROQ_API_KEY=your_key_here
+
 uvicorn main:app --reload
 \```
 
