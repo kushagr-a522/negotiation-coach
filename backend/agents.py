@@ -14,8 +14,8 @@ def opponent_agent(conversation_history, budget_ceiling=90000):
     response = client.chat.completions.create(
         model=MODEL,
         messages=messages,
-        temperature=0.8,
-        max_tokens=300,   # increased from 150
+        temperature=0.9,
+        max_tokens=100, 
     )
     return response.choices[0].message.content
 
