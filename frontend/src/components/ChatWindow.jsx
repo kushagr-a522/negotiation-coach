@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { sendMessage } from "../api";
-import TacticsMeter from "./TacticsMeter";
 
-export default function ChatWindow() {
+export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, onEndNegotiation }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [latestScore, setLatestScore] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [scoreHistory, setScoreHistory] = useState([]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -17,9 +16,16 @@ export default function ChatWindow() {
     setLoading(true);
 
     try {
-      const { ai_reply, score } = await sendMessage(messages, input);
-      setLatestScore(score);
+      const { ai_reply, score } = await sendMessage(sessionId, messages, input);
+      const normalizedScore = {
+        ...score,
+        total_score_normalized: score.total_score,
+      };
+      const updatedScores = [...scoreHistory, normalizedScore];
+      setScoreHistory(updatedScores);
+      onScoreUpdate(normalizedScore, updatedScores);
       setMessages([...newHistory, { role: "assistant", content: ai_reply }]);
+      onMessageSent();
     } catch (error) {
       console.error("Error talking to backend:", error);
     }
@@ -28,43 +34,48 @@ export default function ChatWindow() {
   };
 
   return (
-    <div>
-      <div style={{ minHeight: "300px", border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }}>
+    <div className="center-panel">
+      <div className="chat-box">
+        {messages.length === 0 && (
+          <p className="chat-empty-hint">Start negotiating — try opening with your target number.</p>
+        )}
         {messages.map((m, i) => (
-          <div
-            key={i}
-            style={{
-              textAlign: m.role === "user" ? "right" : "left",
-              margin: "8px 0",
-            }}
-          >
-            <span style={{
-              display: "inline-block",
-              padding: "8px 12px",
-              borderRadius: "12px",
-              backgroundColor: m.role === "user" ? "#DCF8C6" : "#EAEAEA",
-            }}>
+          <div key={i} className={`message-row ${m.role === "user" ? "user" : "opponent"}`}>
+            {m.role !== "user" && <span className="corner-badge them">THEM</span>}
+            <div className={`bubble ${m.role === "user" ? "user" : "opponent"}`}>
               {m.content}
-            </span>
+            </div>
+            {m.role === "user" && <span className="corner-badge you">YOU</span>}
           </div>
         ))}
-        {loading && <p><em>AI is typing...</em></p>}
+        {loading && (
+          <div className="message-row opponent">
+            <span className="corner-badge them">THEM</span>
+            <div className="bubble opponent typing-dots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {latestScore && <TacticsMeter score={latestScore} />}
-
-      <div style={{ marginTop: "10px", display: "flex" }}>
+      <div className="input-row">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="Type your negotiation message..."
-          style={{ flex: 1, padding: "8px" }}
         />
-        <button onClick={handleSend} style={{ marginLeft: "8px", padding: "8px 16px" }}>
-          Send
-        </button>
+        <button onClick={handleSend}>SEND</button>
       </div>
+
+      {messages.length > 0 && (
+        <button
+          className="end-negotiation-btn"
+          onClick={() => onEndNegotiation(scoreHistory)}
+        >
+          End negotiation & see report
+        </button>
+      )}
     </div>
   );
 }
