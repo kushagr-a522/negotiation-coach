@@ -42,12 +42,18 @@ Two cooperating AI agents:
  uvicorn main:app --reload
 ```
 
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ---
 
 ## Team
 
 - **[Akanksha Rawat]** -> Frontend, UI/UX design, React implementation
 - **[Kushagra Yadav]** -> Backend, AI agent design, prompt engineering, API architecture
-
 
 ---
