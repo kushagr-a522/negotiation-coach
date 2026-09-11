@@ -45,7 +45,9 @@ Two cooperating AI agents:
 ---
 
 ## Team
-- **[Kushagra Yadav]** -> Backend, AI agent design, prompt engineering, API architecture
+
 - **[Akanksha Rawat]** -> Frontend, UI/UX design, React implementation
+- **[Kushagra Yadav]** -> Backend, AI agent design, prompt engineering, API architecture
+
 
 ---
