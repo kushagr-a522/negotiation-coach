@@ -18,7 +18,7 @@ Two cooperating AI agents:
 ## Tech Stack
 - **Backend:** Python, FastAPI, Groq API (openai/gpt-oss-120b)
 - **Frontend:** React (Vite), JavaScript
-- **Hosting:** Render (backend), Vercel (frontend) - fully free tier
+- **Hosting:** Render (backend), Vercel (frontend)
 
 ---
 
@@ -33,14 +33,14 @@ Two cooperating AI agents:
 ## Running Locally
 
 ### Backend
-\```bash
-- cd backend
-- python -m venv venv
-- venv\Scripts\activate        # Mac/Linux: source venv/bin/activate
-- pip install -r requirements.txt
-- *create a .env file with: GROQ_API_KEY=your_key_here*
-- uvicorn main:app --reload
-\```
+> bash
+> cd backend
+> python -m venv venv
+> venv\Scripts\activate        
+> // Mac/Linux: source venv/bin/activate
+> pip install -r requirements.txt
+> *create a .env file with: GROQ_API_KEY=your_key_here*
+> uvicorn main:app --reload
 
 ---
 
