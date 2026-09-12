@@ -18,19 +18,19 @@ def init_db():
     conn.commit()
     conn.close()
 
-def save_session(session_id, messages, latest_score):
+def save_session(session_id, messages, score_history):
     conn = sqlite3.connect(DB_PATH)
     now = datetime.utcnow().isoformat()
     existing = conn.execute("SELECT id FROM sessions WHERE id = ?", (session_id,)).fetchone()
     if existing:
         conn.execute(
             "UPDATE sessions SET messages = ?, latest_score = ?, updated_at = ? WHERE id = ?",
-            (json.dumps(messages), json.dumps(latest_score), now, session_id)
+            (json.dumps(messages), json.dumps(score_history), now, session_id)
         )
     else:
         conn.execute(
             "INSERT INTO sessions (id, created_at, updated_at, messages, latest_score) VALUES (?, ?, ?, ?, ?)",
-            (session_id, now, now, json.dumps(messages), json.dumps(latest_score))
+            (session_id, now, now, json.dumps(messages), json.dumps(score_history))
         )
     conn.commit()
     conn.close()

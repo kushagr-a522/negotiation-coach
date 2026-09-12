@@ -18,6 +18,7 @@ class NegotiationRequest(BaseModel):
     session_id: str
     conversation_history: list
     latest_message: str
+    score_history: list = []
 
 @app.post("/negotiate")
 def negotiate(req: NegotiationRequest):
@@ -26,7 +27,8 @@ def negotiate(req: NegotiationRequest):
     ai_reply = opponent_agent(updated_history)
 
     full_history = updated_history + [{"role": "assistant", "content": ai_reply}]
-    save_session(req.session_id, full_history, score)
+    full_scores = req.score_history + [score]
+    save_session(req.session_id, full_history, full_scores)
 
     return {"ai_reply": ai_reply, "score": score}
 
