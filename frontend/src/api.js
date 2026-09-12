@@ -1,6 +1,6 @@
-const API_URL = "http://10.180.111.180:8000"; // update to your IP when connecting laptops
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-export async function sendMessage(sessionId, conversationHistory, latestMessage) {
+export async function sendMessage(sessionId, conversationHistory, latestMessage, scoreHistory = []) {
   const response = await fetch(`${API_URL}/negotiate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -8,6 +8,7 @@ export async function sendMessage(sessionId, conversationHistory, latestMessage)
       session_id: sessionId,
       conversation_history: conversationHistory,
       latest_message: latestMessage,
+      score_history: scoreHistory,
     }),
   });
   return response.json();

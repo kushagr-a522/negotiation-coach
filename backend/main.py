@@ -19,17 +19,18 @@ class NegotiationRequest(BaseModel):
     conversation_history: list
     latest_message: str
     score_history: list = []
+    scenario: str = "salary"
 
 @app.post("/negotiate")
 def negotiate(req: NegotiationRequest):
     updated_history = req.conversation_history + [{"role": "user", "content": req.latest_message}]
     score = coach_agent(req.latest_message, updated_history)
-    ai_reply = opponent_agent(updated_history)
+    ai_reply = opponent_agent(updated_history, req.scenario)
 
     full_history = updated_history + [{"role": "assistant", "content": ai_reply}]
     full_scores = req.score_history + [score]
     save_session(req.session_id, full_history, full_scores)
-    
+
     return {"ai_reply": ai_reply, "score": score}
 
 @app.get("/sessions")

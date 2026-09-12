@@ -1,21 +1,21 @@
 import os, json
 from groq import Groq
-from rubric import NEGOTIATION_RUBRIC, OPPONENT_PERSONA
+from rubric import get_opponent_persona , NEGOTIATION_RUBRIC
 from dotenv import load_dotenv
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 MODEL = "openai/gpt-oss-120b"
 
-def opponent_agent(conversation_history, budget_ceiling=90000):
-    system_prompt = OPPONENT_PERSONA.format(budget_ceiling=budget_ceiling)
+def opponent_agent(conversation_history, scenario="salary"):
+    system_prompt = get_opponent_persona(scenario)
     messages = [{"role": "system", "content": system_prompt}] + conversation_history
 
     response = client.chat.completions.create(
         model=MODEL,
         messages=messages,
         temperature=0.9,
-        max_tokens=300, 
+        max_tokens=300,
     )
     return response.choices[0].message.content
 

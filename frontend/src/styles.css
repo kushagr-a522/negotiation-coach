@@ -480,3 +480,20 @@ body {
 .glow-fill {
   box-shadow: 0 0 8px rgba(232, 163, 61, 0.5);
 }
+
+.error-banner {
+  background: rgba(217, 82, 74, 0.12);
+  border: 1px solid #D9524A;
+  color: #D9524A;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.inline-score-hint {
+  font-size: 11px;
+  color: #8B93A1;
+  text-align: right;
+  margin: -6px 8px 8px 0;
+}

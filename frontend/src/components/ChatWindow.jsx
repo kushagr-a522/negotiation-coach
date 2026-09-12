@@ -6,9 +6,12 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [scoreHistory, setScoreHistory] = useState([]);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const handleSend = async () => {
     if (!input.trim()) return;
+
+    setErrorMsg(null);
 
     const newHistory = [...messages, { role: "user", content: input }];
     setMessages(newHistory);
@@ -16,7 +19,7 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
     setLoading(true);
 
     try {
-      const { ai_reply, score } = await sendMessage(sessionId, messages, input);
+      const { ai_reply, score } = await sendMessage(sessionId, messages, input, scoreHistory);
       const normalizedScore = {
         ...score,
         total_score_normalized: score.total_score,
@@ -28,6 +31,7 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
       onMessageSent();
     } catch (error) {
       console.error("Error talking to backend:", error);
+      setErrorMsg("Couldn't reach the negotiation server. Check your connection and try again.");
     }
 
     setLoading(false);
@@ -57,6 +61,8 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
           </div>
         )}
       </div>
+
+            {errorMsg && <div className="error-banner">{errorMsg}</div>}
 
       <div className="input-row">
         <input
