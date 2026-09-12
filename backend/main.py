@@ -29,7 +29,7 @@ def negotiate(req: NegotiationRequest):
     full_history = updated_history + [{"role": "assistant", "content": ai_reply}]
     full_scores = req.score_history + [score]
     save_session(req.session_id, full_history, full_scores)
-
+    
     return {"ai_reply": ai_reply, "score": score}
 
 @app.get("/sessions")
