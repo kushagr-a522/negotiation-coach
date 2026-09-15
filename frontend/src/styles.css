@@ -497,3 +497,48 @@ body {
   text-align: right;
   margin: -6px 8px 8px 0;
 }
+
+.scenario-picker {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.scenario-title {
+  font-family: 'Oswald', sans-serif;
+  color: #f1ece4;
+  margin-bottom: 24px;
+}
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.scenario-card {
+  background: #171224;
+  border: 1px solid #2a2035;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  text-align: left;
+  color: #f1ece4;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.scenario-card:hover {
+  border-color: #E8A33D;
+  box-shadow: 0 0 16px rgba(232, 163, 61, 0.2);
+}
+
+.scenario-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: #E8A33D;
+}
+
+.scenario-desc {
+  font-size: 13px;
+  color: #9C93AA;
+}

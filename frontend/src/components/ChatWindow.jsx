@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { sendMessage } from "../api";
 
-export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, onEndNegotiation }) {
+export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, onEndNegotiation, scenario }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
     setLoading(true);
 
     try {
-      const { ai_reply, score } = await sendMessage(sessionId, messages, input, scoreHistory);
+      const { ai_reply, score } = await sendMessage(sessionId, messages, input, scoreHistory, scenario);
       const normalizedScore = {
         ...score,
         total_score_normalized: score.total_score,

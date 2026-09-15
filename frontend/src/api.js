@@ -1,6 +1,6 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-export async function sendMessage(sessionId, conversationHistory, latestMessage, scoreHistory = []) {
+export async function sendMessage(sessionId, conversationHistory, latestMessage, scoreHistory = [], scenario = "salary") {
   const response = await fetch(`${API_URL}/negotiate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -9,6 +9,7 @@ export async function sendMessage(sessionId, conversationHistory, latestMessage,
       conversation_history: conversationHistory,
       latest_message: latestMessage,
       score_history: scoreHistory,
+      scenario: scenario,
     }),
   });
   return response.json();
