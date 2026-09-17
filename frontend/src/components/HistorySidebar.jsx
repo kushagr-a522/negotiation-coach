@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { listSessions } from "../api";
-
-import { useEffect, useState } from "react";
 import { listSessions, getStats } from "../api";
 
 export default function HistorySidebar({ activeSessionId, onSelectSession, onNewSession, refreshKey, visitorId }) {
