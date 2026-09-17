@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { sendMessage } from "../api";
 
-export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, onEndNegotiation, scenario }) {
+export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, onEndNegotiation, scenario, visitorId }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
     setLoading(true);
 
     try {
-      const { ai_reply, score } = await sendMessage(sessionId, messages, input, scoreHistory, scenario);
+      const { ai_reply, score } = await sendMessage(sessionId, messages, input, scoreHistory, scenario, visitorId);
       const normalizedScore = {
         ...score,
         total_score_normalized: score.total_score,
@@ -62,7 +62,7 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
         )}
       </div>
 
-            {errorMsg && <div className="error-banner">{errorMsg}</div>}
+      {errorMsg && <div className="error-banner">{errorMsg}</div>}
 
       <div className="input-row">
         <input

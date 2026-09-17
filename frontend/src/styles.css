@@ -542,3 +542,80 @@ body {
   font-size: 13px;
   color: #9C93AA;
 }
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #262d38;
+  margin-bottom: 20px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-logo {
+  font-size: 22px;
+}
+
+.navbar-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  color: #E8A33D;
+  letter-spacing: 0.02em;
+}
+
+.navbar-tagline {
+  font-size: 13px;
+  color: #8B93A1;
+  border-left: 1px solid #262d38;
+  padding-left: 14px;
+}
+
+.scoring-guide-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #ECE9E1;
+}
+
+.scoring-guide-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #262d38;
+}
+
+.scoring-guide-list li:last-child {
+  border-bottom: none;
+}
+
+.name-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #2a2035;
+  background: #171224;
+  color: #ECE9E1;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.stats-block {
+  background: #1c1626;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 12px 0 16px;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #9C93AA;
+  padding: 3px 0;
+}

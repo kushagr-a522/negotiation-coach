@@ -63,3 +63,22 @@ def get_session(session_id):
         "messages": json.loads(row[2]),
         "latest_score": json.loads(row[3]) if row[3] else None
     }
+
+def get_stats(visitor_id):
+    conn = sqlite3.connect(DB_PATH)
+    rows = conn.execute(
+        "SELECT latest_score FROM sessions WHERE visitor_id = ?", (visitor_id,)
+    ).fetchall()
+    conn.close()
+
+    total_sessions = len(rows)
+    all_scores = []
+    for row in rows:
+        scores = json.loads(row[0]) if row[0] else []
+        all_scores.extend(scores)
+
+    if not all_scores:
+        return {"total_sessions": total_sessions, "avg_score_percent": 0}
+
+    avg = sum(s.get("total_score", 0) for s in all_scores) / (len(all_scores) * 8)
+    return {"total_sessions": total_sessions, "avg_score_percent": round(avg * 100)}

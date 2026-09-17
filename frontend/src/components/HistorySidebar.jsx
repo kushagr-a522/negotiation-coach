@@ -1,16 +1,29 @@
 import { useEffect, useState } from "react";
 import { listSessions } from "../api";
 
-export default function HistorySidebar({ activeSessionId, onSelectSession, onNewSession, refreshKey }) {
+import { useEffect, useState } from "react";
+import { listSessions, getStats } from "../api";
+
+export default function HistorySidebar({ activeSessionId, onSelectSession, onNewSession, refreshKey, visitorId }) {
   const [sessions, setSessions] = useState([]);
+  const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    listSessions().then(setSessions).catch(() => setSessions([]));
-  }, [refreshKey]);
+    listSessions(visitorId).then(setSessions).catch(() => setSessions([]));
+    getStats(visitorId).then(setStats).catch(() => setStats(null));
+  }, [refreshKey, visitorId]);
 
   return (
     <div className="sidebar-panel">
       <button className="new-session-btn" onClick={onNewSession}>+ New Negotiation</button>
+
+      {stats && stats.total_sessions > 0 && (
+        <div className="stats-block">
+          <div className="stats-row"><span>Total Sessions</span><span>{stats.total_sessions}</span></div>
+          <div className="stats-row"><span>Avg Score</span><span>{stats.avg_score_percent}%</span></div>
+        </div>
+      )}
+
       <div className="sidebar-title">Past Negotiations</div>
       {sessions.length === 0 && <p className="sidebar-empty">No negotiations yet</p>}
       {sessions.map((s) => (

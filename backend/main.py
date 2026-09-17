@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from agents import opponent_agent, coach_agent
-from db import init_db, save_session, list_sessions, get_session
+from db import init_db, save_session, list_sessions, get_session, get_stats
 
 app = FastAPI()
 init_db()
@@ -43,6 +43,10 @@ def get_session_detail(session_id: str):
     if not session:
         return {"error": "Session not found"}
     return session
+
+@app.get("/stats")
+def stats(visitor_id: str = "anonymous"):
+    return get_stats(visitor_id)
 
 @app.get("/")
 def health_check():
