@@ -1,11 +1,11 @@
-function average(scores, key) {
+function average(scores, key, max = 2) {
   if (scores.length === 0) return 0;
   const sum = scores.reduce((acc, s) => acc + (s[key] || 0), 0);
-  return Math.round((sum / (scores.length * 2)) * 100);
+  return Math.round((sum / (scores.length * max)) * 100);
 }
 
 export default function FinalReport({ scoreHistory, onNewSession }) {
-  const overall = average(scoreHistory, "total_score_normalized");
+  const overall = average(scoreHistory, "total_score_normalized", 8);
 
   const categories = [
     { key: "anchoring", label: "Anchoring" },
