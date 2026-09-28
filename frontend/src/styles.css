@@ -237,16 +237,6 @@ body {
   padding-top: 10px;
 }
 
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 260px 1fr 300px;
-  gap: 20px;
-  max-width: 1200px;
-  margin: 24px auto;
-  padding: 0 20px;
-  min-height: 90vh;
-}
-
 .sidebar-panel {
   background: #171b22;
   border: 1px solid #262d38;
@@ -498,39 +488,42 @@ body {
   margin: -6px 8px 8px 0;
 }
 
-.scenario-picker {
-  text-align: center;
-  padding: 40px 20px;
-}
-
 .scenario-title {
   font-family: 'Oswald', sans-serif;
   color: #f1ece4;
   margin-bottom: 24px;
 }
 
+.scenario-picker {
+  text-align: center;
+  padding: 48px 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .scenario-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 28px;
 }
 
 .scenario-card {
   background: #171224;
   border: 1px solid #2a2035;
   border-radius: 12px;
-  padding: 20px;
+  padding: 22px 24px;
   cursor: pointer;
   text-align: left;
   color: #f1ece4;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
 }
 
 .scenario-card:hover {
   border-color: #E8A33D;
-  box-shadow: 0 0 16px rgba(232, 163, 61, 0.2);
+  box-shadow: 0 0 16px rgba(232, 163, 61, 0.15);
+  transform: translateY(-2px);
 }
-
 .scenario-label {
   font-family: 'Oswald', sans-serif;
   font-size: 16px;
@@ -541,39 +534,6 @@ body {
 .scenario-desc {
   font-size: 13px;
   color: #9C93AA;
-}
-
-.navbar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 20px;
-  border-bottom: 1px solid #262d38;
-  margin-bottom: 20px;
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.navbar-logo {
-  font-size: 22px;
-}
-
-.navbar-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 20px;
-  color: #E8A33D;
-  letter-spacing: 0.02em;
-}
-
-.navbar-tagline {
-  font-size: 13px;
-  color: #8B93A1;
-  border-left: 1px solid #262d38;
-  padding-left: 14px;
 }
 
 .scoring-guide-list {
@@ -618,4 +578,89 @@ body {
   font-size: 12px;
   color: #9C93AA;
   padding: 3px 0;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 28px;
+  border-bottom: 1px solid #262d38;
+  flex-wrap: wrap;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-mark {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #12161c;
+  background: #E8A33D;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.navbar-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  color: #ECE9E1;
+  letter-spacing: 0.02em;
+}
+
+.navbar-tagline {
+  font-size: 13px;
+  color: #8B93A1;
+  padding-left: 14px;
+  border-left: 1px solid #262d38;
+}
+
+/* ===== Dashboard layout ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  gap: 24px;
+  max-width: 1280px;
+  margin: 28px auto;
+  padding: 0 24px;
+  min-height: 90vh;
+}
+
+/* Tablet: drop to 2 columns, scoring guide/meter moves below */
+@media (max-width: 1000px) {
+  .dashboard-grid {
+    grid-template-columns: 220px 1fr;
+    gap: 18px;
+  }
+  .right-panel {
+    grid-column: 1 / -1;
+    position: static;
+    margin-top: 20px;
+  }
+}
+
+/* Mobile: everything stacks in one column */
+@media (max-width: 680px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    padding: 0 16px;
+    margin: 16px auto;
+  }
+  .sidebar-panel {
+    position: static;
+  }
+  .navbar {
+    padding: 14px 16px;
+  }
+  .navbar-tagline {
+    border-left: none;
+    padding-left: 0;
+    width: 100%;
+    order: 3;
+  }
 }
