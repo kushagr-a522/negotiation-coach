@@ -1,12 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { sendMessage } from "../api";
+import ScoreChart from "./ScoreChart";
 
-export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, onEndNegotiation, scenario, visitorId }) {
-  const [messages, setMessages] = useState([]);
+export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, onEndNegotiation, scenario, visitorId, resumeData }) {
+  const [messages, setMessages] = useState(resumeData?.messages || []);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [scoreHistory, setScoreHistory] = useState([]);
+  const [scoreHistory, setScoreHistory] = useState(
+    (resumeData?.latest_score || []).map((s) => ({ ...s, total_score_normalized: s.total_score }))
+  );
   const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    if (resumeData) {
+      setMessages(resumeData.messages || []);
+      const normalized = (resumeData.latest_score || []).map((s) => ({ ...s, total_score_normalized: s.total_score }));
+      setScoreHistory(normalized);
+      if (normalized.length > 0) onScoreUpdate(normalized[normalized.length - 1], normalized);
+    }
+  }, [resumeData]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -20,10 +32,7 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
 
     try {
       const { ai_reply, score } = await sendMessage(sessionId, messages, input, scoreHistory, scenario, visitorId);
-      const normalizedScore = {
-        ...score,
-        total_score_normalized: score.total_score,
-      };
+      const normalizedScore = { ...score, total_score_normalized: score.total_score };
       const updatedScores = [...scoreHistory, normalizedScore];
       setScoreHistory(updatedScores);
       onScoreUpdate(normalizedScore, updatedScores);
@@ -74,11 +83,10 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
         <button onClick={handleSend}>SEND</button>
       </div>
 
+      {scoreHistory.length > 0 && <ScoreChart scoreHistory={scoreHistory} />}
+
       {messages.length > 0 && (
-        <button
-          className="end-negotiation-btn"
-          onClick={() => onEndNegotiation(scoreHistory)}
-        >
+        <button className="end-negotiation-btn" onClick={() => onEndNegotiation(scoreHistory)}>
           End negotiation & see report
         </button>
       )}

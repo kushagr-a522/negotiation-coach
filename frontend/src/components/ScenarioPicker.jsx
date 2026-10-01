@@ -16,13 +16,16 @@ export default function ScenarioPicker({ onSelect }) {
 
   return (
     <div className="scenario-picker">
-      <input
-        className="name-input"
-        placeholder="What should we call you?"
-        value={name}
-        onChange={handleNameChange}
-      />
-      <h2 className="scenario-title">Choose your negotiation</h2>
+      <div className="picker-hero">
+        <p className="picker-eyebrow">Welcome{name ? `, ${name}` : ""}</p>
+        <h2 className="scenario-title">Choose a negotiation to practice</h2>
+        <input
+          className="name-input"
+          placeholder="What should we call you?"
+          value={name}
+          onChange={handleNameChange}
+        />
+      </div>
       <div className="scenario-grid">
         {SCENARIOS.map((s) => (
           <button key={s.key} className="scenario-card" onClick={() => onSelect(s.key)}>

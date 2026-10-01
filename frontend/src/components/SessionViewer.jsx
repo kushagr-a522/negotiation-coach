@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getSession } from "../api";
+import ScoreChart from "./ScoreChart";
 
-export default function SessionViewer({ sessionId, onScoreUpdate }) {
+export default function SessionViewer({ sessionId, onScoreUpdate, onContinue }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
@@ -18,7 +19,13 @@ export default function SessionViewer({ sessionId, onScoreUpdate }) {
 
   return (
     <div className="center-panel">
-      <div className="viewing-banner">Viewing a past negotiation (read-only)</div>
+      <div className="viewing-banner">
+        <span>Viewing a past negotiation</span>
+        <button className="continue-btn" onClick={() => onContinue(session)}>
+          Continue this negotiation →
+        </button>
+      </div>
+
       <div className="chat-box">
         {session.messages.map((m, i) => (
           <div key={i}>
@@ -37,6 +44,8 @@ export default function SessionViewer({ sessionId, onScoreUpdate }) {
           </div>
         ))}
       </div>
+
+      <ScoreChart scoreHistory={scores} />
     </div>
   );
 }

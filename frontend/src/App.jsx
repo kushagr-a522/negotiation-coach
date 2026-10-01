@@ -34,6 +34,7 @@ function App() {
   const [overallPercent, setOverallPercent] = useState(0);
   const [reportData, setReportData] = useState(null);
   const [scenario, setScenario] = useState(null);
+  const [resumeData, setResumeData] = useState(null);
 
   const handleNewSession = () => {
     setSessionId(crypto.randomUUID());
@@ -42,6 +43,7 @@ function App() {
     setOverallPercent(0);
     setReportData(null);
     setScenario(null);
+    setResumeData(null);
   };
 
   const handleMessageSent = () => setRefreshKey((k) => k + 1);
@@ -56,6 +58,14 @@ function App() {
 
   const handleEndNegotiation = (scoreHistory) => {
     setReportData(scoreHistory);
+  };
+
+  const handleContinue = (session) => {
+    setSessionId(session.id);
+    setScenario(session.scenario || "salary");
+    setResumeData(session);
+    setViewingSessionId(null);
+    setReportData(null);
   };
 
   return (
@@ -85,12 +95,17 @@ function App() {
           ) : reportData ? (
             <FinalReport scoreHistory={reportData} onNewSession={handleNewSession} />
           ) : viewingSessionId ? (
-            <SessionViewer sessionId={viewingSessionId} onScoreUpdate={setLatestScore} />
+            <SessionViewer
+              sessionId={viewingSessionId}
+              onScoreUpdate={setLatestScore}
+              onContinue={handleContinue}
+            />
           ) : (
             <ChatWindow
               sessionId={sessionId}
               scenario={scenario}
               visitorId={visitorId}
+              resumeData={resumeData}
               onMessageSent={handleMessageSent}
               onScoreUpdate={handleScoreUpdate}
               onEndNegotiation={handleEndNegotiation}
