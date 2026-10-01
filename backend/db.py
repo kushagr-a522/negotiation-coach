@@ -9,6 +9,8 @@ def init_db():
     conn.execute("""
         CREATE TABLE IF NOT EXISTS sessions (
             id TEXT PRIMARY KEY,
+            visitor_id TEXT,
+            scenario TEXT,
             created_at TEXT,
             updated_at TEXT,
             messages TEXT,
@@ -18,26 +20,29 @@ def init_db():
     conn.commit()
     conn.close()
 
-def save_session(session_id, messages, score_history):
+def save_session(session_id, visitor_id, scenario, messages, score_history):
     conn = sqlite3.connect(DB_PATH)
     now = datetime.utcnow().isoformat()
     existing = conn.execute("SELECT id FROM sessions WHERE id = ?", (session_id,)).fetchone()
     if existing:
         conn.execute(
-            "UPDATE sessions SET messages = ?, latest_score = ?, updated_at = ? WHERE id = ?",
-            (json.dumps(messages), json.dumps(score_history), now, session_id)
+            "UPDATE sessions SET messages = ?, latest_score = ?, updated_at = ?, scenario = ? WHERE id = ?",
+            (json.dumps(messages), json.dumps(score_history), now, scenario, session_id)
         )
     else:
         conn.execute(
-            "INSERT INTO sessions (id, created_at, updated_at, messages, latest_score) VALUES (?, ?, ?, ?, ?)",
-            (session_id, now, now, json.dumps(messages), json.dumps(score_history))
+            "INSERT INTO sessions (id, visitor_id, scenario, created_at, updated_at, messages, latest_score) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (session_id, visitor_id, scenario, now, now, json.dumps(messages), json.dumps(score_history))
         )
     conn.commit()
     conn.close()
 
-def list_sessions():
+def list_sessions(visitor_id):
     conn = sqlite3.connect(DB_PATH)
-    rows = conn.execute("SELECT id, created_at, messages FROM sessions ORDER BY updated_at DESC").fetchall()
+    rows = conn.execute(
+        "SELECT id, created_at, messages FROM sessions WHERE visitor_id = ? ORDER BY updated_at DESC",
+        (visitor_id,)
+    ).fetchall()
     conn.close()
     result = []
     for row in rows:
@@ -53,15 +58,18 @@ def list_sessions():
 
 def get_session(session_id):
     conn = sqlite3.connect(DB_PATH)
-    row = conn.execute("SELECT id, created_at, messages, latest_score FROM sessions WHERE id = ?", (session_id,)).fetchone()
+    row = conn.execute(
+        "SELECT id, scenario, created_at, messages, latest_score FROM sessions WHERE id = ?", (session_id,)
+    ).fetchone()
     conn.close()
     if not row:
         return None
     return {
         "id": row[0],
-        "created_at": row[1],
-        "messages": json.loads(row[2]),
-        "latest_score": json.loads(row[3]) if row[3] else None
+        "scenario": row[1] or "salary",
+        "created_at": row[2],
+        "messages": json.loads(row[3]),
+        "latest_score": json.loads(row[4]) if row[4] else []
     }
 
 def get_stats(visitor_id):
