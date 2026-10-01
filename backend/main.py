@@ -16,6 +16,7 @@ app.add_middleware(
 
 class NegotiationRequest(BaseModel):
     session_id: str
+    visitor_id: str = "anonymous"
     conversation_history: list
     latest_message: str
     score_history: list = []
@@ -29,13 +30,13 @@ def negotiate(req: NegotiationRequest):
 
     full_history = updated_history + [{"role": "assistant", "content": ai_reply}]
     full_scores = req.score_history + [score]
-    save_session(req.session_id, full_history, full_scores)
+    save_session(req.session_id, req.visitor_id, req.scenario, full_history, full_scores)
 
     return {"ai_reply": ai_reply, "score": score}
 
 @app.get("/sessions")
-def get_sessions():
-    return list_sessions()
+def get_sessions(visitor_id: str = "anonymous"):
+    return list_sessions(visitor_id)
 
 @app.get("/sessions/{session_id}")
 def get_session_detail(session_id: str):
