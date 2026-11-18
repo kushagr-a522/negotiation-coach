@@ -7,6 +7,7 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, sc
   const [messages, setMessages] = useState(resumeData?.messages || []);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [slow, setSlow] = useState(false);
   const [scoreHistory, setScoreHistory] = useState(
     (resumeData?.latest_score || []).map((s) => ({ ...s, total_score_normalized: s.total_score }))
   );
@@ -27,7 +28,17 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, sc
   useEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages, loading]);
+  }, [messages, loading, slow]);
+
+  // If a reply takes longer than 8 seconds, the free server is probably waking up
+  useEffect(() => {
+    if (!loading) {
+      setSlow(false);
+      return;
+    }
+    const timer = setTimeout(() => setSlow(true), 8000);
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   const handleSend = async () => {
     const text = input.trim();
@@ -82,6 +93,12 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, sc
         ))}
 
         {loading && <ChatBubble role="assistant" scenario={scenario} typing />}
+
+        {loading && slow && (
+          <div className="ch-note">
+            The server is waking up. The first reply can take up to a minute, and it'll be quick after that.
+          </div>
+        )}
       </div>
 
       {errorMsg && <div className="ch-error">{errorMsg}</div>}

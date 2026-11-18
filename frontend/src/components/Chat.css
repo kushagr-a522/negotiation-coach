@@ -728,3 +728,15 @@
     max-width: 85%;
   }
 }
+/* Shown when the server is slow to reply (free hosting waking up) */
+.ch-note {
+  align-self: center;
+  max-width: 420px;
+  padding: 10px 18px;
+  border-radius: 18px;
+  background: #fde2cb;
+  color: #8a3a0c;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
