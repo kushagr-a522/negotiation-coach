@@ -1,7 +1,40 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-export async function sendMessage(sessionId, conversationHistory, latestMessage, scoreHistory = [], scenario = "salary", visitorId = "anonymous") {
-  const response = await fetch(`${API_URL}/negotiate`, {
+// Thrown when the server answered, but with an error status (400, 404, 500...)
+export class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
+async function request(path, options) {
+  const response = await fetch(`${API_URL}${path}`, options);
+
+  if (!response.ok) {
+    let detail = "";
+    try {
+      const body = await response.json();
+      if (typeof body.detail === "string") detail = body.detail;
+    } catch {
+      // body wasn't JSON, fall back to the status code below
+    }
+    throw new ApiError(detail || `Request failed (${response.status})`, response.status);
+  }
+
+  return response.json();
+}
+
+export function sendMessage(
+  sessionId,
+  conversationHistory,
+  latestMessage,
+  scoreHistory = [],
+  scenario = "salary",
+  visitorId = "anonymous"
+) {
+  return request("/negotiate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -13,20 +46,16 @@ export async function sendMessage(sessionId, conversationHistory, latestMessage,
       scenario: scenario,
     }),
   });
-  return response.json();
 }
 
-export async function listSessions(visitorId = "anonymous") {
-  const response = await fetch(`${API_URL}/sessions?visitor_id=${visitorId}`);
-  return response.json();
+export function listSessions(visitorId = "anonymous") {
+  return request(`/sessions?visitor_id=${encodeURIComponent(visitorId)}`);
 }
 
-export async function getSession(sessionId) {
-  const response = await fetch(`${API_URL}/sessions/${sessionId}`);
-  return response.json();
+export function getSession(sessionId) {
+  return request(`/sessions/${encodeURIComponent(sessionId)}`);
 }
 
-export async function getStats(visitorId = "anonymous") {
-  const response = await fetch(`${API_URL}/stats?visitor_id=${visitorId}`);
-  return response.json();
+export function getStats(visitorId = "anonymous") {
+  return request(`/stats?visitor_id=${encodeURIComponent(visitorId)}`);
 }
