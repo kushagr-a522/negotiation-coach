@@ -1,41 +1,51 @@
-function getStatus(score) {
-  if (score === 2) return { word: "Strong", color: "#4FA88A" };
-  if (score === 1) return { word: "Attempted", color: "#E3A857" };
-  return { word: "Missing", color: "#D9694F" };
-}
+const LEVELS = {
+  2: { word: "Strong", color: "#4fa83d" },
+  1: { word: "Attempted", color: "#f2a23a" },
+  0: { word: "Missing", color: "#d9694f" },
+};
+
+const IDLE = { word: "—", color: "#d9c4b6" };
 
 function MeterRow({ label, score }) {
-  const status = getStatus(score);
+  const idle = score === undefined || score === null;
+  const status = idle ? IDLE : LEVELS[score] || LEVELS[0];
+  const width = idle ? 0 : (score / 2) * 100;
+
   return (
-    <div className="meter-row">
-      <div className="meter-label-row">
+    <div className="ch-meter-row">
+      <div className="ch-meter-top">
         <span>{label}</span>
-        <span className="meter-word" style={{ color: status.color }}>{status.word}</span>
+        <span className="ch-meter-word" style={{ color: status.color }}>
+          {status.word}
+        </span>
       </div>
-      <div className="meter-bar-bg">
-        <div
-          className="meter-bar-fill"
-          style={{ width: `${(score / 2) * 100}%`, background: status.color }}
-        />
+      <div className="ch-bar">
+        <div className="ch-bar-fill" style={{ width: `${width}%`, background: status.color }} />
       </div>
     </div>
   );
 }
 
 export default function TacticsMeter({ score }) {
-  if (!score) return null;
+  const has = !!score;
 
   return (
-    <div className="meter-box">
-      <div className="meter-title">Your Scorecard</div>
-      <div className="meter-legend">Missing = didn't show it · Attempted = tried it · Strong = did it well</div>
+    <section className="ch-card">
+      <div className="ch-card-head">
+        <h2>Your Scorecard</h2>
+        {has && score.total_score !== undefined && <span className="ch-total">{score.total_score}/8</span>}
+      </div>
+      <p className="ch-legend">0 Missing · 1 Attempted · 2 Strong (latest message)</p>
 
-      <MeterRow label="Anchoring" score={score.anchoring} />
-      <MeterRow label="No Free Concessions" score={score.no_free_concession} />
-      <MeterRow label="Leverage Used" score={score.leverage_use} />
-      <MeterRow label="Confidence" score={score.calm_confidence} />
+      <MeterRow label="Anchoring" score={score?.anchoring} />
+      <MeterRow label="No Free Concessions" score={score?.no_free_concession} />
+      <MeterRow label="Leverage Used" score={score?.leverage_use} />
+      <MeterRow label="Confidence" score={score?.calm_confidence} />
 
-      <p className="meter-tip"><strong>Coach's tip:</strong> {score.feedback}</p>
-    </div>
+      <p className="ch-tip">
+        <strong>Coach's tip</strong>
+        {has ? score.feedback : "Send your first message and it gets scored here."}
+      </p>
+    </section>
   );
 }
