@@ -1,0 +1,360 @@
+/* ===== Page: one screen tall, no page scroll ===== */
+.sg-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: calc(100vh - 136px);
+  min-height: 560px;
+}
+
+.sg-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.sg-head-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #f7780f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(200, 120, 70, 0.12);
+}
+
+.sg-head-icon svg {
+  width: 46px;
+  height: 46px;
+}
+
+.sg-title {
+  font-size: clamp(32px, 3.4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #1f1916;
+}
+
+.sg-title span {
+  color: #f7780f;
+}
+
+.sg-sub {
+  margin-top: 4px;
+  font-size: 19px;
+  color: rgba(43, 36, 32, 0.65);
+}
+
+.sg-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 24px;
+}
+
+.sg-card {
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: 0 8px 28px rgba(200, 120, 70, 0.1);
+}
+
+/* ===== How it works ===== */
+.sg-how {
+  display: flex;
+  flex-direction: column;
+}
+
+.sg-how h2 {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.sg-how-text {
+  margin-top: 10px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(43, 36, 32, 0.68);
+}
+
+.sg-donut-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.sg-donut {
+  position: relative;
+  width: min(280px, 100%);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+
+.sg-donut svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.sg-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sg-donut-center strong {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.sg-donut-center span {
+  margin-top: 4px;
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(43, 36, 32, 0.7);
+}
+
+.sg-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sg-legend li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.sg-legend small {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(43, 36, 32, 0.55);
+}
+
+.sg-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ===== Criteria ===== */
+.sg-criteria {
+  display: flex;
+  flex-direction: column;
+}
+
+.sg-pill {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px 10px 12px;
+  border-radius: 999px;
+  background: #fcd9bd;
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sg-pill-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+  color: #f7780f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sg-pill-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* If a row is open on a short screen, the list scrolls inside the card */
+.sg-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(247, 120, 15, 0.35) transparent;
+}
+
+.sg-item {
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(250, 225, 205, 0.95);
+  border-radius: 20px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.sg-item:hover,
+.sg-item.open {
+  border-color: #f9a55f;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.sg-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 18px 14px 14px;
+  font-family: inherit;
+  text-align: left;
+  color: #2b2420;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Peach tile + simple line icon, same style as the Dashboard card */
+.sg-item-icon {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: #fbe3d2;
+  color: #3a2c26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sg-item-icon svg {
+  width: 48%;
+  height: 48%;
+}
+
+/* Orange bar before the text */
+.sg-item-text {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding-left: 18px;
+}
+
+.sg-item-text::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 36px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: #f7780f;
+}
+
+.sg-item-title {
+  display: block;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.sg-item-title em {
+  font-style: normal;
+  font-weight: 600;
+  color: rgba(43, 36, 32, 0.55);
+}
+
+.sg-item-desc {
+  display: block;
+  margin-top: 2px;
+  font-size: 15px;
+  color: rgba(43, 36, 32, 0.68);
+}
+
+.sg-item-btn > svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Lines up with the text: 14 padding + 56 tile + 16 gap + 18 bar space */
+.sg-item-more {
+  padding: 0 20px 18px 104px;
+}
+
+.sg-item-more p {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(43, 36, 32, 0.75);
+}
+
+.sg-item-more ul {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sg-item-more li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+}
+
+.sg-item-more b {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fde2cb;
+  color: #c9490f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ===== Small screens: stack and allow normal scrolling ===== */
+@media (max-width: 1000px) {
+  .sg-page {
+    height: auto;
+    min-height: 0;
+  }
+  .sg-body {
+    grid-template-columns: 1fr;
+  }
+  .sg-list {
+    overflow: visible;
+  }
+  .sg-item-more {
+    padding-left: 20px;
+  }
+}
