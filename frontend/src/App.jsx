@@ -1,14 +1,19 @@
 import { useState } from "react";
+import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
-import HistorySidebar from "./components/HistorySidebar";
+import History from "./components/History";
+import Settings from "./components/Settings";
 import ChatWindow from "./components/ChatWindow";
 import SessionViewer from "./components/SessionViewer";
 import TacticsMeter from "./components/TacticsMeter";
+import ScoreChart from "./components/ScoreChart";
 import OverallGauge from "./components/OverallGauge";
 import FinalReport from "./components/FinalReport";
 import ScenarioPicker from "./components/ScenarioPicker";
 import ScoringGuide from "./components/ScoringGuide";
-import "./styles.css";
+import Dashboard from "./components/Dashboard";
+import "./shell.css";
+import "./components/Chat.css";
 
 const SCENARIO_LABELS = {
   salary: "HIRING MANAGER",
@@ -27,37 +32,67 @@ const getVisitorId = () => {
 
 function App() {
   const [visitorId] = useState(getVisitorId);
+  const [page, setPage] = useState("dashboard");
   const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
   const [viewingSessionId, setViewingSessionId] = useState(null);
   const [latestScore, setLatestScore] = useState(null);
+  const [scoreHistory, setScoreHistory] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [overallPercent, setOverallPercent] = useState(0);
   const [reportData, setReportData] = useState(null);
   const [scenario, setScenario] = useState(null);
   const [resumeData, setResumeData] = useState(null);
 
-  const handleNewSession = () => {
+  const resetSession = () => {
     setSessionId(crypto.randomUUID());
     setViewingSessionId(null);
     setLatestScore(null);
+    setScoreHistory([]);
     setOverallPercent(0);
     setReportData(null);
-    setScenario(null);
     setResumeData(null);
+  };
+
+  const handleNewSession = () => {
+    resetSession();
+    setScenario(null);
+    setPage("dashboard");
+  };
+
+  const handlePickScenario = (key) => {
+    resetSession();
+    setScenario(key);
+    setPage("practice");
+  };
+
+  const handleSelectSession = (id) => {
+    setViewingSessionId(id);
+    setReportData(null);
+    setLatestScore(null);
+    setScoreHistory([]);
+    setPage("practice");
   };
 
   const handleMessageSent = () => setRefreshKey((k) => k + 1);
 
+  // Live chat: a new message was scored
   const handleScoreUpdate = (score, allScores) => {
     setLatestScore(score);
-    const avg =
-      allScores.reduce((acc, s) => acc + s.total_score_normalized, 0) /
-      (allScores.length * 8);
+    setScoreHistory(allScores);
+    const avg = allScores.length
+      ? allScores.reduce((acc, s) => acc + s.total_score_normalized, 0) / (allScores.length * 8)
+      : 0;
     setOverallPercent(Math.round(avg * 100));
   };
 
-  const handleEndNegotiation = (scoreHistory) => {
-    setReportData(scoreHistory);
+  // Past session: scores were loaded
+  const handleViewerScores = (scores) => {
+    setLatestScore(scores[scores.length - 1] || null);
+    setScoreHistory(scores);
+  };
+
+  const handleEndNegotiation = (scores) => {
+    setReportData(scores);
   };
 
   const handleContinue = (session) => {
@@ -66,59 +101,86 @@ function App() {
     setResumeData(session);
     setViewingSessionId(null);
     setReportData(null);
+    setPage("practice");
   };
 
-  return (
-    <>
-      <Navbar />
-      <div className="dashboard-grid">
-        <HistorySidebar
-          activeSessionId={viewingSessionId || sessionId}
-          onSelectSession={setViewingSessionId}
-          onNewSession={handleNewSession}
-          refreshKey={refreshKey}
-          visitorId={visitorId}
-        />
+  const showPicker = !scenario && !viewingSessionId;
 
-        <div className="main-column">
-          {scenario && (
-            <div className="match-header">
-              <span className="corner-tag you">YOU</span>
-              <span className="vs-divider">vs</span>
-              <span className="corner-tag them">{SCENARIO_LABELS[scenario]}</span>
-              {!reportData && <OverallGauge percent={overallPercent} />}
+  return (
+    <div className="app-frame">
+      <Sidebar page={page} onNavigate={setPage} />
+
+      <div className="app-main">
+        <Navbar />
+
+        <main className="page-body">
+          {page === "dashboard" && (
+            <Dashboard
+              onPickScenario={handlePickScenario}
+              onOpenGuide={() => setPage("guide")}
+            />
+          )}
+
+          {page === "practice" && showPicker && <ScenarioPicker onSelect={handlePickScenario} />}
+
+          {/* Kept mounted (just hidden) so switching pages doesn't wipe a live chat */}
+          {!showPicker && (
+            <div className={`ch-page ${reportData ? "solo" : ""}`} hidden={page !== "practice"}>
+              <div className="ch-main">
+                {scenario && !viewingSessionId && (
+                  <div className="ch-head">
+                    <span className="ch-tag you">YOU</span>
+                    <span className="ch-vs">vs</span>
+                    <span className="ch-tag them">{SCENARIO_LABELS[scenario]}</span>
+                    {!reportData && <OverallGauge percent={overallPercent} />}
+                  </div>
+                )}
+
+                {reportData ? (
+                  <FinalReport scoreHistory={reportData} onNewSession={handleNewSession} />
+                ) : viewingSessionId ? (
+                  <SessionViewer
+                    sessionId={viewingSessionId}
+                    onScoreUpdate={handleViewerScores}
+                    onContinue={handleContinue}
+                  />
+                ) : (
+                  <ChatWindow
+                    key={sessionId}
+                    sessionId={sessionId}
+                    scenario={scenario}
+                    visitorId={visitorId}
+                    resumeData={resumeData}
+                    onMessageSent={handleMessageSent}
+                    onScoreUpdate={handleScoreUpdate}
+                  />
+                )}
+              </div>
+
+              {!reportData && (
+                <aside className="ch-side">
+                  <TacticsMeter score={latestScore} />
+                  <ScoreChart scoreHistory={scoreHistory} />
+                  {!viewingSessionId && scoreHistory.length > 0 && (
+                    <button type="button" className="ch-end" onClick={() => handleEndNegotiation(scoreHistory)}>
+                      End negotiation & see report
+                    </button>
+                  )}
+                </aside>
+              )}
             </div>
           )}
 
-          {!scenario && !viewingSessionId ? (
-            <ScenarioPicker onSelect={setScenario} />
-          ) : reportData ? (
-            <FinalReport scoreHistory={reportData} onNewSession={handleNewSession} />
-          ) : viewingSessionId ? (
-            <SessionViewer
-              sessionId={viewingSessionId}
-              onScoreUpdate={setLatestScore}
-              onContinue={handleContinue}
-            />
-          ) : (
-            <ChatWindow
-              sessionId={sessionId}
-              scenario={scenario}
-              visitorId={visitorId}
-              resumeData={resumeData}
-              onMessageSent={handleMessageSent}
-              onScoreUpdate={handleScoreUpdate}
-              onEndNegotiation={handleEndNegotiation}
-            />
+          {page === "history" && (
+            <History visitorId={visitorId} refreshKey={refreshKey} onSelectSession={handleSelectSession} />
           )}
-        </div>
 
-        <div className="right-panel">
-          {!reportData && scenario && <TacticsMeter score={latestScore} />}
-          {!scenario && !viewingSessionId && <ScoringGuide />}
-        </div>
+          {page === "guide" && <ScoringGuide />}
+
+          {page === "settings" && <Settings visitorId={visitorId} />}
+        </main>
       </div>
-    </>
+    </div>
   );
 }
 
