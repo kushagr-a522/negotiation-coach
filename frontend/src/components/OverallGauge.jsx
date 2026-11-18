@@ -1,17 +1,18 @@
 export default function OverallGauge({ percent }) {
   const angle = (percent / 100) * 360;
+
   return (
-    <div className="gauge-wrap">
-      <div
-        className="gauge-ring"
-        style={{
-          background: `conic-gradient(#E8A33D ${angle}deg, #2a2035 ${angle}deg)`
-        }}
-      >
-        <div className="gauge-inner">
-          <span className="gauge-percent">{percent}%</span>
-          <span className="gauge-label">Match Score</span>
-        </div>
+    <div
+      className="ch-gauge"
+      role="img"
+      aria-label={`Match score ${percent} percent`}
+      style={{
+        background: `conic-gradient(#f7780f ${angle}deg, rgba(247, 120, 15, 0.16) ${angle}deg)`,
+      }}
+    >
+      <div className="ch-gauge-inner">
+        <strong>{percent}%</strong>
+        <span>Match</span>
       </div>
     </div>
   );

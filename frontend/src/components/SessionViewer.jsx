@@ -1,51 +1,79 @@
 import { useEffect, useState } from "react";
 import { getSession } from "../api";
-import ScoreChart from "./ScoreChart";
+import ChatBubble from "./ChatBubble";
+import { IconHistory, IconArrowRight } from "./Icons";
 
 export default function SessionViewer({ sessionId, onScoreUpdate, onContinue }) {
   const [session, setSession] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    getSession(sessionId).then((data) => {
-      setSession(data);
-      const scores = data.latest_score || [];
-      onScoreUpdate(scores[scores.length - 1] || null);
-    });
+    let cancelled = false;
+    setSession(null);
+    setError(null);
+
+    getSession(sessionId)
+      .then((data) => {
+        if (cancelled) return;
+        setSession(data);
+        onScoreUpdate(data.latest_score || []);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || "Couldn't load this negotiation.");
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [sessionId]);
 
-  if (!session) return <div className="center-panel"><p className="chat-empty-hint">Loading...</p></div>;
+  if (error) {
+    return (
+      <section className="ch-chat">
+        <p className="ch-state error">{error}</p>
+      </section>
+    );
+  }
+
+  if (!session) {
+    return (
+      <section className="ch-chat">
+        <p className="ch-state">Loading...</p>
+      </section>
+    );
+  }
 
   const scores = session.latest_score || [];
 
   return (
-    <div className="center-panel">
-      <div className="viewing-banner">
+    <>
+      <div className="ch-banner">
+        <span className="ch-banner-icon">
+          <IconHistory />
+        </span>
         <span>Viewing a past negotiation</span>
-        <button className="continue-btn" onClick={() => onContinue(session)}>
-          Continue this negotiation →
+        <button type="button" className="ch-continue" onClick={() => onContinue(session)}>
+          <span>Continue negotiation</span>
+          <IconArrowRight />
         </button>
       </div>
 
-      <div className="chat-box">
-        {session.messages.map((m, i) => (
-          <div key={i}>
-            <div className={`message-row ${m.role === "user" ? "user" : "opponent"}`}>
-              {m.role !== "user" && <span className="corner-badge them">THEM</span>}
-              <div className={`bubble ${m.role === "user" ? "user" : "opponent"}`}>
-                {m.content}
-              </div>
-              {m.role === "user" && <span className="corner-badge you">YOU</span>}
-            </div>
-            {m.role === "user" && scores[Math.floor(i / 2)] && (
-              <p className="inline-score-hint">
-                Score: {scores[Math.floor(i / 2)].total_score}/8
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <ScoreChart scoreHistory={scores} />
-    </div>
+      <section className="ch-chat">
+        <div className="ch-messages">
+          {session.messages.map((m, i) => {
+            const s = m.role === "user" ? scores[Math.floor(i / 2)] : null;
+            return (
+              <ChatBubble
+                key={i}
+                role={m.role}
+                content={m.content}
+                scenario={session.scenario}
+                hint={s ? `${s.total_score}/8` : null}
+              />
+            );
+          })}
+        </div>
+      </section>
+    </>
   );
 }
