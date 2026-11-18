@@ -1,0 +1,411 @@
+.db-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+/* ===== Left column ===== */
+.db-center {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.db-welcome-pill {
+  align-self: flex-start;
+  padding: 9px 22px;
+  border-radius: 999px;
+  background: #fcd9bd;
+  color: #c9490f;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.db-heading {
+  font-size: clamp(26px, min(3.1vw, 5.6vh), 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.14;
+  color: #1f1916;
+}
+
+.db-practice {
+  position: relative;
+  display: block;
+  width: fit-content;
+  color: #f7780f;
+}
+
+.db-swoosh {
+  position: absolute;
+  left: 0;
+  bottom: -0.2em;
+  width: 175%;
+  height: 0.3em;
+  pointer-events: none;
+}
+
+.db-name {
+  --ic-dot: #fbe3d2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  padding: 2px 24px;
+  background: rgba(250, 215, 190, 0.5);
+  border: 1px solid rgba(250, 215, 190, 0.9);
+  border-radius: 999px;
+}
+
+.db-name svg {
+  width: 26px;
+  height: 26px;
+  color: #2d2623;
+  flex-shrink: 0;
+}
+
+.db-name input {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 0;
+  font-family: inherit;
+  font-size: 17px;
+  color: #2b2420;
+  background: transparent;
+  border: none;
+}
+
+.db-name input:focus {
+  outline: none;
+}
+
+.db-name input::placeholder {
+  color: rgba(43, 36, 32, 0.5);
+}
+
+.db-scenarios {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.db-scenario {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 24px 14px 16px;
+  font-family: inherit;
+  text-align: left;
+  color: #2b2420;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(250, 225, 205, 0.95);
+  border-radius: 22px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.db-scenario:hover {
+  transform: translateY(-2px);
+  border-color: #f9a55f;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.db-sc-icon {
+  --ic-bg: #f58220;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: var(--ic-bg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 14px rgba(245, 130, 32, 0.22);
+}
+
+.db-sc-icon.soft {
+  --ic-bg: #f78d74;
+  box-shadow: 0 6px 14px rgba(247, 141, 116, 0.22);
+}
+
+.db-sc-icon svg {
+  width: 50%;
+  height: 50%;
+}
+
+.db-sc-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.db-sc-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.db-sc-desc {
+  margin-top: 4px;
+  font-size: 15px;
+  color: rgba(43, 36, 32, 0.68);
+}
+
+.db-scenario > svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* ===== Right card: how you're scored ===== */
+.db-crit-card {
+  margin-top: 36px;
+  padding: 10px 28px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(200, 120, 70, 0.1);
+}
+
+.db-crit-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 0 22px;
+  border-bottom: 1px solid rgba(45, 38, 35, 0.09);
+}
+
+.db-crit-trophy {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fbe3d2;
+  color: #f7780f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.db-crit-trophy svg {
+  width: 50%;
+  height: 50%;
+}
+
+.db-crit-heading {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1f1916;
+}
+
+.db-crit-sub {
+  margin-top: 3px;
+  font-size: 15px;
+  color: rgba(43, 36, 32, 0.65);
+}
+
+.db-crit {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 22px 0;
+  font-family: inherit;
+  text-align: left;
+  color: #2b2420;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(45, 38, 35, 0.09);
+}
+
+.db-crit:last-child {
+  border-bottom: none;
+}
+
+.db-crit.clickable {
+  cursor: pointer;
+}
+
+.db-crit.clickable:hover .db-crit-title {
+  color: #f7780f;
+}
+
+.db-crit-tile {
+  width: 66px;
+  height: 66px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  background: #fbe3d2;
+  color: #3a2c26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.db-crit-tile svg {
+  width: 48%;
+  height: 48%;
+}
+
+.db-crit-text {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding-left: 18px;
+}
+
+.db-crit-text::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 40px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: #f7780f;
+}
+
+.db-crit-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.db-crit-desc {
+  margin-top: 4px;
+  font-size: 16px;
+  color: rgba(43, 36, 32, 0.7);
+}
+
+.db-crit > svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   ONE-SCREEN MODE (desktop): everything scales with window height,
+   so the Dashboard never needs a scrollbar.
+   ========================================================================== */
+@media (min-width: 1101px) and (min-height: 620px) {
+  body:has(.db-grid) {
+    overflow: hidden;
+  }
+
+  .app-frame:has(.db-grid) {
+    height: 100vh;
+    min-height: 0;
+  }
+
+  .page-body:has(> .db-grid) {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .db-grid {
+    flex: 1;
+    min-height: 0;
+    gap: clamp(20px, 2.4vw, 32px);
+  }
+
+  /* left */
+  .db-center {
+    gap: clamp(8px, 1.8vh, 20px);
+  }
+  .db-welcome-pill {
+    padding: clamp(6px, 1vh, 9px) 22px;
+    font-size: clamp(14px, 2.1vh, 17px);
+  }
+  .db-name {
+    margin-top: 0;
+  }
+  .db-name input {
+    padding: clamp(10px, 2vh, 16px) 0;
+    font-size: clamp(14px, 2.1vh, 17px);
+  }
+  .db-scenarios {
+    gap: clamp(8px, 1.4vh, 12px);
+  }
+  .db-scenario {
+    padding: clamp(6px, 1.2vh, 14px) 24px clamp(6px, 1.2vh, 14px) 16px;
+  }
+  .db-sc-icon {
+    width: clamp(46px, 8.6vh, 74px);
+    height: clamp(46px, 8.6vh, 74px);
+  }
+  .db-sc-title {
+    font-size: clamp(16px, 2.5vh, 20px);
+  }
+  .db-sc-desc {
+    margin-top: 2px;
+    font-size: clamp(13px, 1.95vh, 15px);
+  }
+
+  /* right */
+  .db-crit-card {
+    margin-top: clamp(8px, 4.4vh, 40px);
+    padding: 4px 28px;
+  }
+  .db-crit-head {
+    padding: clamp(10px, 2vh, 20px) 0 clamp(10px, 2.2vh, 22px);
+  }
+  .db-crit-trophy {
+    width: clamp(40px, 7vh, 56px);
+    height: clamp(40px, 7vh, 56px);
+  }
+  .db-crit-heading {
+    font-size: clamp(19px, 3vh, 24px);
+  }
+  .db-crit-sub {
+    font-size: clamp(13px, 1.95vh, 15px);
+  }
+  .db-crit {
+    padding: clamp(8px, 2.4vh, 22px) 0;
+  }
+  .db-crit-tile {
+    width: clamp(44px, 8vh, 66px);
+    height: clamp(44px, 8vh, 66px);
+    border-radius: clamp(12px, 2.2vh, 18px);
+  }
+  .db-crit-title {
+    font-size: clamp(17px, 2.7vh, 22px);
+  }
+  .db-crit-desc {
+    margin-top: 2px;
+    font-size: clamp(13px, 2vh, 16px);
+  }
+  .db-crit-text::before {
+    height: clamp(28px, 5vh, 40px);
+  }
+}
+
+/* ===== Smaller screens: normal scrolling layout ===== */
+@media (max-width: 1100px) {
+  .db-grid {
+    grid-template-columns: 1fr;
+  }
+  .db-crit-card {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .db-crit-tile {
+    width: 52px;
+    height: 52px;
+  }
+  .db-crit-title {
+    font-size: 18px;
+  }
+  .db-crit-desc {
+    font-size: 14px;
+  }
+  .db-crit-heading {
+    font-size: 20px;
+  }
+}
