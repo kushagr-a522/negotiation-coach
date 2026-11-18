@@ -1,0 +1,235 @@
+/* ===== Page: one screen tall, no page scroll ===== */
+.st-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: calc(100vh - 136px);
+  min-height: 560px;
+}
+
+.st-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.st-head-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #f7780f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(200, 120, 70, 0.12);
+}
+
+.st-head-icon svg {
+  width: 46px;
+  height: 46px;
+}
+
+.st-title {
+  font-size: clamp(32px, 3.4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.st-title span {
+  color: #f7780f;
+}
+
+.st-sub {
+  margin-top: 4px;
+  font-size: 19px;
+  color: rgba(43, 36, 32, 0.65);
+}
+
+.st-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.st-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.st-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: 0 8px 28px rgba(200, 120, 70, 0.1);
+}
+
+.st-card h2 {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.st-hint {
+  margin-top: -8px;
+  font-size: 16px;
+  color: rgba(43, 36, 32, 0.62);
+}
+
+.st-about {
+  font-size: 17px;
+  line-height: 1.55;
+  color: rgba(43, 36, 32, 0.75);
+}
+
+/* ===== Buttons and inputs ===== */
+.st-btn {
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2b2420;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(250, 215, 190, 0.95);
+  border-radius: 999px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.st-btn:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.st-btn.primary {
+  color: #fff;
+  background: #f7780f;
+  border-color: #f7780f;
+  box-shadow: 0 6px 14px rgba(247, 120, 15, 0.3);
+}
+
+.st-btn.primary:hover {
+  background: #e86d0a;
+}
+
+.st-btn.danger {
+  align-self: flex-start;
+  color: #c43d2a;
+  border-color: rgba(196, 61, 42, 0.35);
+}
+
+.st-btn.danger:hover {
+  background: rgba(196, 61, 42, 0.08);
+}
+
+.st-name-row {
+  display: flex;
+  gap: 12px;
+}
+
+.st-name-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 22px;
+  font-family: inherit;
+  font-size: 17px;
+  color: #2b2420;
+  background: rgba(250, 215, 190, 0.45);
+  border: 1px solid rgba(250, 215, 190, 0.9);
+  border-radius: 999px;
+}
+
+.st-name-row input:focus {
+  outline: none;
+  border-color: #f7780f;
+}
+
+.st-id-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.st-id,
+.st-url {
+  min-width: 0;
+  padding: 12px 18px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 14px;
+  color: #2b2420;
+  background: rgba(43, 36, 32, 0.06);
+  border-radius: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.st-id {
+  flex: 1;
+  user-select: all;
+}
+
+/* ===== Connection ===== */
+.st-conn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.st-conn-label {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.st-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #b9a89c;
+  flex-shrink: 0;
+}
+
+.st-dot.online {
+  background: #4fa83d;
+  box-shadow: 0 0 0 5px rgba(79, 168, 61, 0.18);
+}
+
+.st-dot.offline {
+  background: #d9524a;
+  box-shadow: 0 0 0 5px rgba(217, 82, 74, 0.18);
+}
+
+/* ===== Small screens ===== */
+@media (max-width: 1000px) {
+  .st-page {
+    height: auto;
+    min-height: 0;
+  }
+  .st-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .st-name-row,
+  .st-id-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
