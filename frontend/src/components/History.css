@@ -1,0 +1,383 @@
+/* ===== Page: one screen tall, no page scroll ===== */
+.hs-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: calc(100vh - 136px);
+  min-height: 560px;
+}
+
+.hs-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.hs-head-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #2d2623;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(200, 120, 70, 0.12);
+}
+
+.hs-head-icon svg {
+  width: 46px;
+  height: 46px;
+}
+
+.hs-title {
+  font-size: clamp(32px, 3.4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #1f1916;
+}
+
+.hs-title span {
+  color: #f7780f;
+}
+
+.hs-sub {
+  margin-top: 4px;
+  font-size: 19px;
+  color: rgba(43, 36, 32, 0.65);
+}
+
+.hs-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.hs-card {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow: 0 8px 28px rgba(200, 120, 70, 0.1);
+}
+
+/* ===== Left column ===== */
+.hs-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.hs-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.hs-stat {
+  text-align: center;
+  padding: 18px 10px;
+}
+
+.hs-stat-icon {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 6px;
+  color: #f7780f;
+}
+
+.hs-stat-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hs-stat-label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.hs-stat-value {
+  margin-top: 2px;
+  font-size: 38px;
+  font-weight: 800;
+}
+
+.hs-recent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hs-recent-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.hs-recent h2,
+.hs-chart-head h2 {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.hs-viewall {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f1916;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hs-viewall svg {
+  width: 20px;
+  height: 20px;
+  color: #f7780f;
+}
+
+/* The list scrolls inside its card, the page never does */
+.hs-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(247, 120, 15, 0.35) transparent;
+}
+
+.hs-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 12px 18px 12px 14px;
+  font-family: inherit;
+  text-align: left;
+  color: #2b2420;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(250, 225, 205, 0.95);
+  border-radius: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.hs-row:hover {
+  transform: translateY(-1px);
+  border-color: #f9a55f;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.hs-row-icon {
+  --ic-bg: #f58220;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--ic-bg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hs-row-icon.soft {
+  --ic-bg: #f78d74;
+}
+
+.hs-row-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.hs-row-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.hs-row-name {
+  display: block;
+  font-size: 19px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hs-row-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 15px;
+  color: rgba(43, 36, 32, 0.6);
+}
+
+.hs-pill {
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 800;
+  background: #fbe1c4;
+  color: #8a4a12;
+  flex-shrink: 0;
+}
+
+.hs-pill.good {
+  background: #d9edc6;
+  color: #3f6b1f;
+}
+
+.hs-pill.none {
+  background: rgba(43, 36, 32, 0.07);
+  color: rgba(43, 36, 32, 0.5);
+}
+
+.hs-row > svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.hs-empty {
+  padding: 24px 8px;
+  text-align: center;
+  font-size: 16px;
+  color: rgba(43, 36, 32, 0.6);
+}
+
+.hs-error {
+  color: #c43d2a;
+}
+
+/* ===== Right column ===== */
+.hs-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.hs-chart-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hs-chart-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.hs-chart-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #fde2cb;
+  color: #c9490f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hs-chart-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.hs-chart {
+  flex: 1;
+  min-height: 200px;
+  position: relative;
+}
+
+.hs-chart-note {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(43, 36, 32, 0.55);
+  flex-shrink: 0;
+}
+
+.hs-progress {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 24px;
+  background: rgba(252, 217, 189, 0.55);
+  flex-shrink: 0;
+}
+
+.hs-progress-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fde2cb;
+  color: #f7780f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hs-progress-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.hs-progress-title {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.hs-progress-text {
+  margin-top: 2px;
+  font-size: 16px;
+  color: rgba(43, 36, 32, 0.7);
+}
+
+/* ===== Small screens: stack and allow normal scrolling ===== */
+@media (max-width: 1000px) {
+  .hs-page {
+    height: auto;
+    min-height: 0;
+  }
+  .hs-body {
+    grid-template-columns: 1fr;
+  }
+  .hs-list {
+    overflow: visible;
+  }
+  .hs-chart {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 700px) {
+  .hs-stats {
+    grid-template-columns: 1fr;
+  }
+}
