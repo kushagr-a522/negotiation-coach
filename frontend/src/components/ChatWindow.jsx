@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { sendMessage } from "../api";
-import ScoreChart from "./ScoreChart";
+import { useState, useEffect, useRef } from "react";
+import { sendMessage, ApiError } from "../api";
+import ChatBubble from "./ChatBubble";
+import { IconChat, IconArrowRight } from "./Icons";
 
-export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, onEndNegotiation, scenario, visitorId, resumeData }) {
+export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, scenario, visitorId, resumeData }) {
   const [messages, setMessages] = useState(resumeData?.messages || []);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -10,6 +11,8 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
     (resumeData?.latest_score || []).map((s) => ({ ...s, total_score_normalized: s.total_score }))
   );
   const [errorMsg, setErrorMsg] = useState(null);
+  const listRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (resumeData) {
@@ -20,18 +23,25 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
     }
   }, [resumeData]);
 
+  // Keep the newest message in view
+  useEffect(() => {
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages, loading]);
+
   const handleSend = async () => {
-    if (!input.trim()) return;
+    const text = input.trim();
+    if (!text || loading) return;
 
     setErrorMsg(null);
 
-    const newHistory = [...messages, { role: "user", content: input }];
+    const newHistory = [...messages, { role: "user", content: text }];
     setMessages(newHistory);
     setInput("");
     setLoading(true);
 
     try {
-      const { ai_reply, score } = await sendMessage(sessionId, messages, input, scoreHistory, scenario, visitorId);
+      const { ai_reply, score } = await sendMessage(sessionId, messages, text, scoreHistory, scenario, visitorId);
       const normalizedScore = { ...score, total_score_normalized: score.total_score };
       const updatedScores = [...scoreHistory, normalizedScore];
       setScoreHistory(updatedScores);
@@ -40,56 +50,55 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, on
       onMessageSent();
     } catch (error) {
       console.error("Error talking to backend:", error);
-      setErrorMsg("Couldn't reach the negotiation server. Check your connection and try again.");
+      // Put the message back so nothing is lost
+      setMessages(messages);
+      setInput(text);
+      setErrorMsg(
+        error instanceof ApiError
+          ? `The server had a problem: ${error.message}`
+          : "Couldn't reach the negotiation server. Check your connection and try again."
+      );
+    } finally {
+      setLoading(false);
+      inputRef.current?.focus();
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="center-panel">
-      <div className="chat-box">
-        {messages.length === 0 && (
-          <p className="chat-empty-hint">Start negotiating — try opening with your target number.</p>
+    <section className="ch-chat">
+      <div className="ch-messages" ref={listRef}>
+        {messages.length === 0 && !loading && (
+          <div className="ch-empty">
+            <span className="ch-empty-icon">
+              <IconChat />
+            </span>
+            <h3>Start the negotiation</h3>
+            <p>Try opening with your target number.</p>
+          </div>
         )}
+
         {messages.map((m, i) => (
-          <div key={i} className={`message-row ${m.role === "user" ? "user" : "opponent"}`}>
-            {m.role !== "user" && <span className="corner-badge them">THEM</span>}
-            <div className={`bubble ${m.role === "user" ? "user" : "opponent"}`}>
-              {m.content}
-            </div>
-            {m.role === "user" && <span className="corner-badge you">YOU</span>}
-          </div>
+          <ChatBubble key={i} role={m.role} content={m.content} scenario={scenario} />
         ))}
-        {loading && (
-          <div className="message-row opponent">
-            <span className="corner-badge them">THEM</span>
-            <div className="bubble opponent typing-dots">
-              <span></span><span></span><span></span>
-            </div>
-          </div>
-        )}
+
+        {loading && <ChatBubble role="assistant" scenario={scenario} typing />}
       </div>
 
-      {errorMsg && <div className="error-banner">{errorMsg}</div>}
+      {errorMsg && <div className="ch-error">{errorMsg}</div>}
 
-      <div className="input-row">
+      <div className="ch-input">
         <input
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="Type your negotiation message..."
         />
-        <button onClick={handleSend}>SEND</button>
-      </div>
-
-      {scoreHistory.length > 0 && <ScoreChart scoreHistory={scoreHistory} />}
-
-      {messages.length > 0 && (
-        <button className="end-negotiation-btn" onClick={() => onEndNegotiation(scoreHistory)}>
-          End negotiation & see report
+        <button type="button" className="ch-send" onClick={handleSend} disabled={loading || !input.trim()}>
+          <span>Send</span>
+          <IconArrowRight />
         </button>
-      )}
-    </div>
+      </div>
+    </section>
   );
 }
