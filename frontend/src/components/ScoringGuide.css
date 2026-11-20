@@ -51,11 +51,13 @@
   color: rgba(43, 36, 32, 0.65);
 }
 
+/* CHANGED: fixed row height so both cards match the body height */
 .sg-body {
   flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-rows: minmax(0, 1fr);
   gap: 24px;
 }
 
@@ -69,9 +71,14 @@
 }
 
 /* ===== How it works ===== */
+/* CHANGED: the card now scrolls inside itself instead of clipping */
 .sg-how {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  padding-right: 22px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(247, 120, 15, 0.35) transparent;
 }
 
 .sg-how h2 {
@@ -79,26 +86,29 @@
   font-weight: 800;
 }
 
+/* CHANGED: font-size 18px -> 17px to save a little height */
 .sg-how-text {
   margin-top: 10px;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.55;
   color: rgba(43, 36, 32, 0.68);
 }
 
+/* CHANGED: stacked column, natural height, centered when there is spare room */
 .sg-donut-wrap {
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  margin: auto 0;
+  padding-top: 18px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
+  gap: 22px;
 }
 
+/* CHANGED: donut size follows screen height (150px to 260px) */
 .sg-donut {
   position: relative;
-  width: min(280px, 100%);
+  width: clamp(150px, 30vh, 260px);
   aspect-ratio: 1;
   flex-shrink: 0;
 }
@@ -131,21 +141,30 @@
   color: rgba(43, 36, 32, 0.7);
 }
 
+/* CHANGED: 2 x 2 grid instead of one tall column */
 .sg-legend {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  width: 100%;
+  max-width: 460px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 28px;
 }
 
 .sg-legend li {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 17px;
+  min-width: 0;
+  font-size: 16px;
   font-weight: 600;
+}
+
+.sg-legend li > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .sg-legend small {
@@ -350,11 +369,23 @@
   }
   .sg-body {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .sg-how {
+    overflow: visible;
+    padding-right: 0;
   }
   .sg-list {
     overflow: visible;
   }
   .sg-item-more {
     padding-left: 20px;
+  }
+}
+
+/* CHANGED: very narrow phones get a single-column legend */
+@media (max-width: 420px) {
+  .sg-legend {
+    grid-template-columns: 1fr;
   }
 }
