@@ -1,0 +1,77 @@
+/* Lift the whole top bar above the page content so the dropdown always wins */
+.app-main .topbar {
+  position: relative;
+  z-index: 100;
+}
+
+.topbar-user {
+  position: relative;
+}
+
+.nb-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.nb-trigger:focus-visible {
+  outline: 2px solid #f7780f;
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+.nb-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 230px;
+  max-width: 280px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid rgba(250, 225, 205, 0.95);
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(200, 120, 70, 0.18);
+  z-index: 200;
+}
+
+.nb-menu-name {
+  padding: 10px 12px 0;
+  font-weight: 700;
+  color: #2b2420;
+  overflow-wrap: anywhere;
+}
+
+.nb-menu-email {
+  padding: 2px 12px 10px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: rgba(43, 36, 32, 0.6);
+  border-bottom: 1px solid rgba(250, 225, 205, 0.95);
+  overflow-wrap: anywhere;
+}
+
+.nb-menu-item {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  font-family: inherit;
+  font-size: 15px;
+  color: #c9490f;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.nb-menu-item:hover,
+.nb-menu-item:focus-visible {
+  background: #fde2cb;
+  outline: none;
+}

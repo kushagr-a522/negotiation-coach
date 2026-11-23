@@ -1,7 +1,5 @@
-import { useState } from "react";
 import "./Dashboard.css";
 import {
-  IconChat,
   IconChevronRight,
   IconBriefcase,
   IconRocket,
@@ -12,11 +10,13 @@ import {
   IconShieldMono,
   IconTrophyLine,
 } from "./Icons";
+import { IconTag } from "./ExtraIcons";
 
 const SCENARIOS = [
   { key: "salary", label: "Salary Negotiation", desc: "Negotiate your pay with a hiring manager", Icon: IconBriefcase, tone: "" },
   { key: "freelance", label: "Freelance Rate", desc: "Negotiate your rate with a startup founder", Icon: IconRocket, tone: "soft" },
   { key: "rent", label: "Apartment Rent", desc: "Negotiate rent terms with a landlord", Icon: IconHouse, tone: "" },
+  { key: "marketplace", label: "Marketplace Deal", desc: "Negotiate the price of a used laptop", Icon: IconTag, tone: "soft" },
 ];
 
 const CRITERIA = [
@@ -27,13 +27,6 @@ const CRITERIA = [
 ];
 
 export default function Dashboard({ onPickScenario, onOpenGuide }) {
-  const [name, setName] = useState(localStorage.getItem("player_name") || "");
-
-  const handleName = (e) => {
-    setName(e.target.value);
-    localStorage.setItem("player_name", e.target.value);
-  };
-
   return (
     <div className="db-grid">
       {/* Left: choose a scenario */}
@@ -50,15 +43,15 @@ export default function Dashboard({ onPickScenario, onOpenGuide }) {
           </span>
         </h1>
 
-        <label className="db-name">
-          <IconChat />
-          <input value={name} onChange={handleName} placeholder="What should we call you?" />
-        </label>
-
         <div className="db-scenarios">
           {SCENARIOS.map(({ key, label, desc, Icon, tone }) => (
-            <button key={key} type="button" className="db-scenario" onClick={() => onPickScenario?.(key)}>
-              <div className={`db-sc-icon ${tone}`}>
+            <button
+              key={key}
+              type="button"
+              className="db-scenario"
+              onClick={() => onPickScenario && onPickScenario(key)}
+            >
+              <div className={"db-sc-icon " + tone}>
                 <Icon />
               </div>
               <div className="db-sc-text">
@@ -89,7 +82,7 @@ export default function Dashboard({ onPickScenario, onOpenGuide }) {
           return (
             <Row
               key={label}
-              className={`db-crit ${clickable ? "clickable" : ""}`}
+              className={"db-crit " + (clickable ? "clickable" : "")}
               {...(clickable ? { type: "button", onClick: onOpenGuide } : {})}
             >
               <div className="db-crit-tile">

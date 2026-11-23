@@ -5,64 +5,31 @@ import { IconSettings } from "./Icons";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-export default function Settings({ visitorId }) {
-  const stored = localStorage.getItem("player_name") || "";
-  const [name, setName] = useState(stored);
-  const [justSaved, setJustSaved] = useState(false);
-  const [copied, setCopied] = useState(false);
+export default function Settings({ user, onLogout }) {
   const [conn, setConn] = useState("checking"); // checking | online | offline
 
   const checkConnection = useCallback(async () => {
     setConn("checking");
     try {
-      await getStats(visitorId);
+      await getStats();
       setConn("online");
-    } catch {
+    } catch (e) {
       setConn("offline");
     }
-  }, [visitorId]);
+  }, []);
 
   useEffect(() => {
     checkConnection();
   }, [checkConnection]);
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    const clean = name.trim();
-    if (clean) localStorage.setItem("player_name", clean);
-    else localStorage.removeItem("player_name");
-    setName(clean);
-    // Tells the welcome bar to refresh its name
-    window.dispatchEvent(new Event("player-name-change"));
-    setJustSaved(true);
-    setTimeout(() => setJustSaved(false), 1800);
-  };
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(visitorId);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      // clipboard blocked, the ID is still selectable on screen
-    }
-  };
-
-  const handleFresh = () => {
-    const ok = window.confirm(
-      "Start fresh? This browser gets a new ID, so your History and stats will look empty. " +
-        "Your old sessions stay on the server but won't show up here."
-    );
-    if (!ok) return;
-    localStorage.setItem("visitor_id", crypto.randomUUID());
-    window.location.reload();
-  };
 
   const connLabel = {
     checking: "Checking...",
     online: "Connected",
     offline: "Can't reach the server",
   }[conn];
+
+  const name = user && user.name ? user.name : "";
+  const email = user && user.email ? user.email : "";
 
   return (
     <div className="st-page">
@@ -81,34 +48,16 @@ export default function Settings({ visitorId }) {
       <div className="st-body">
         <div className="st-col">
           <section className="st-card">
-            <h2>Your name</h2>
-            <p className="st-hint">Shown in the welcome bar at the top.</p>
-            <form className="st-name-row" onSubmit={handleSave}>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="What should we call you?"
-                maxLength={30}
-              />
-              <button type="submit" className="st-btn primary">
-                {justSaved ? "Saved ✓" : "Save"}
-              </button>
-            </form>
-          </section>
-
-          <section className="st-card">
-            <h2>Your data</h2>
-            <p className="st-hint">
-              Sessions are linked to this ID, which lives in this browser. There's no login.
-            </p>
+            <h2>Account</h2>
+            <p className="st-hint">Your sessions are saved to this account and follow you to any device.</p>
             <div className="st-id-row">
-              <code className="st-id">{visitorId}</code>
-              <button type="button" className="st-btn" onClick={handleCopy}>
-                {copied ? "Copied ✓" : "Copy"}
-              </button>
+              <code className="st-id">{name}</code>
             </div>
-            <button type="button" className="st-btn danger" onClick={handleFresh}>
-              Start fresh
+            <div className="st-id-row">
+              <code className="st-id">{email}</code>
+            </div>
+            <button type="button" className="st-btn danger" onClick={onLogout}>
+              Log out
             </button>
           </section>
         </div>
@@ -118,7 +67,7 @@ export default function Settings({ visitorId }) {
             <h2>Connection</h2>
             <p className="st-hint">The backend this app talks to.</p>
             <div className="st-conn">
-              <span className={`st-dot ${conn}`} />
+              <span className={"st-dot " + conn} />
               <span className="st-conn-label">{connLabel}</span>
               <button type="button" className="st-btn" onClick={checkConnection}>
                 Check again

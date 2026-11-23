@@ -304,3 +304,16 @@
     grid-template-columns: 1fr;
   }
 }
+
+.pp-hint {
+  margin: 8px 2px 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(43, 36, 32, 0.65);
+}
+
+/* Decoration only: never block clicks or sit above other UI */
+.pp-hero .pp-squiggle {
+  pointer-events: none;
+  z-index: 0;
+}

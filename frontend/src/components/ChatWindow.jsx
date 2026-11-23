@@ -3,7 +3,15 @@ import { sendMessage, ApiError } from "../api";
 import ChatBubble from "./ChatBubble";
 import { IconChat, IconArrowRight } from "./Icons";
 
-export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, scenario, visitorId, resumeData }) {
+export default function ChatWindow({
+  sessionId,
+  onMessageSent,
+  onScoreUpdate,
+  scenario,
+  difficulty,
+  focus,
+  resumeData,
+}) {
   const [messages, setMessages] = useState(resumeData?.messages || []);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +26,10 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, sc
   useEffect(() => {
     if (resumeData) {
       setMessages(resumeData.messages || []);
-      const normalized = (resumeData.latest_score || []).map((s) => ({ ...s, total_score_normalized: s.total_score }));
+      const normalized = (resumeData.latest_score || []).map((s) => ({
+        ...s,
+        total_score_normalized: s.total_score,
+      }));
       setScoreHistory(normalized);
       if (normalized.length > 0) onScoreUpdate(normalized[normalized.length - 1], normalized);
     }
@@ -52,7 +63,15 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, sc
     setLoading(true);
 
     try {
-      const { ai_reply, score } = await sendMessage(sessionId, messages, text, scoreHistory, scenario, visitorId);
+      const { ai_reply, score } = await sendMessage({
+        sessionId: sessionId,
+        history: messages,
+        message: text,
+        scoreHistory: scoreHistory,
+        scenario: scenario,
+        difficulty: difficulty,
+        focus: focus,
+      });
       const normalizedScore = { ...score, total_score_normalized: score.total_score };
       const updatedScores = [...scoreHistory, normalizedScore];
       setScoreHistory(updatedScores);
@@ -66,7 +85,7 @@ export default function ChatWindow({ sessionId, onMessageSent, onScoreUpdate, sc
       setInput(text);
       setErrorMsg(
         error instanceof ApiError
-          ? `The server had a problem: ${error.message}`
+          ? "The server had a problem: " + error.message
           : "Couldn't reach the negotiation server. Check your connection and try again."
       );
     } finally {

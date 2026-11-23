@@ -2,3 +2,5 @@ fastapi
 groq
 uvicorn
 python-dotenv
+bcrypt
+PyJWT

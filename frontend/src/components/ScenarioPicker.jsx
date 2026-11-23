@@ -12,31 +12,38 @@ import {
   IconArrowRight,
   IconChevronDown,
 } from "./Icons";
+import { IconTag } from "./ExtraIcons";
 
 const SCENARIOS = [
   { key: "salary", label: "Salary Negotiation", desc: "Negotiate your pay with a hiring manager", Icon: IconBriefcase, tone: "strong" },
   { key: "freelance", label: "Freelance Rate", desc: "Negotiate your rate with a startup founder", Icon: IconRocket, tone: "soft" },
   { key: "rent", label: "Apartment Rent", desc: "Negotiate rent terms with a landlord", Icon: IconHouse, tone: "strong" },
-  { key: "other", label: "Other Scenarios", desc: "Explore more scenarios coming soon!", emoji: "🤝", tone: "soft", disabled: true },
+  { key: "marketplace", label: "Marketplace Deal", desc: "Negotiate the price of a used laptop with a seller", Icon: IconTag, tone: "soft" },
 ];
 
-const DIFFICULTIES = ["Easy", "Medium", "Hard"];
+const DIFFICULTIES = [
+  { key: "easy", label: "Easy", hint: "A flexible opponent who gives ground after a reasonable argument." },
+  { key: "medium", label: "Medium", hint: "A balanced opponent who concedes only for a real justification." },
+  { key: "hard", label: "Hard", hint: "A guarded opponent who concedes in small steps, and only for evidence or leverage." },
+];
 
 const FOCUS_AREAS = [
-  "General Negotiation",
-  "Anchoring",
-  "No Free Concessions",
-  "Leverage",
-  "Calm Confidence",
+  { key: "general", label: "General Negotiation" },
+  { key: "anchoring", label: "Anchoring" },
+  { key: "no_free_concession", label: "No Free Concessions" },
+  { key: "leverage_use", label: "Leverage" },
+  { key: "calm_confidence", label: "Calm Confidence" },
 ];
 
 export default function ScenarioPicker({ onSelect }) {
   const [selected, setSelected] = useState("salary");
-  const [difficulty, setDifficulty] = useState("Medium");
-  const [focus, setFocus] = useState(FOCUS_AREAS[0]);
+  const [difficulty, setDifficulty] = useState("medium");
+  const [focus, setFocus] = useState("general");
+
+  const currentDifficulty = DIFFICULTIES.find((d) => d.key === difficulty);
 
   const handleStart = () => {
-    onSelect(selected, { difficulty, focus });
+    onSelect(selected, { difficulty: difficulty, focus: focus });
   };
 
   return (
@@ -72,13 +79,12 @@ export default function ScenarioPicker({ onSelect }) {
               <button
                 key={s.key}
                 type="button"
-                disabled={s.disabled}
                 aria-pressed={selected === s.key}
-                className={`pp-scenario ${selected === s.key ? "selected" : ""}`}
+                className={"pp-scenario " + (selected === s.key ? "selected" : "")}
                 onClick={() => setSelected(s.key)}
               >
-                <div className={`pp-icon ${s.tone}`}>
-                  {s.Icon ? <s.Icon /> : <span className="pp-icon-emoji" role="img" aria-label="Handshake">{s.emoji}</span>}
+                <div className={"pp-icon " + s.tone}>
+                  <s.Icon />
                 </div>
                 <div>
                   <div className="pp-scenario-label">{s.label}</div>
@@ -101,34 +107,42 @@ export default function ScenarioPicker({ onSelect }) {
           </div>
 
           <div className="pp-label">
-            Difficulty Level <IconInfo />
+            Difficulty Level{" "}
+            <span title="Changes how tough the AI opponent is to negotiate with.">
+              <IconInfo />
+            </span>
           </div>
           <div className="pp-diff">
             {DIFFICULTIES.map((d) => (
               <button
-                key={d}
+                key={d.key}
                 type="button"
-                className={difficulty === d ? "active" : ""}
-                onClick={() => setDifficulty(d)}
+                className={difficulty === d.key ? "active" : ""}
+                onClick={() => setDifficulty(d.key)}
               >
-                {d}
+                {d.label}
               </button>
             ))}
           </div>
+          <p className="pp-hint">{currentDifficulty.hint}</p>
 
           <div className="pp-label">
-            Focus Area (Optional) <IconInfo />
+            Focus Area (Optional){" "}
+            <span title="The coach's tip after each message will focus on this skill.">
+              <IconInfo />
+            </span>
           </div>
           <div className="pp-select-wrap">
             <select value={focus} onChange={(e) => setFocus(e.target.value)}>
               {FOCUS_AREAS.map((f) => (
-                <option key={f} value={f}>
-                  {f}
+                <option key={f.key} value={f.key}>
+                  {f.label}
                 </option>
               ))}
             </select>
             <IconChevronDown />
           </div>
+          <p className="pp-hint">The coach's tip after each message will focus on this skill.</p>
 
           <button type="button" className="pp-start" onClick={handleStart}>
             <IconPlay />

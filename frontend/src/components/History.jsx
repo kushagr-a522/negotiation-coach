@@ -19,11 +19,13 @@ import {
   IconRocket,
   IconHouse,
 } from "./Icons";
+import { IconTag } from "./ExtraIcons";
 
 const SCENARIOS = {
   salary: { label: "Salary Negotiation", Icon: IconBriefcase, tone: "" },
   freelance: { label: "Freelance Rate", Icon: IconRocket, tone: "soft" },
   rent: { label: "Apartment Rent", Icon: IconHouse, tone: "" },
+  marketplace: { label: "Marketplace Deal", Icon: IconTag, tone: "soft" },
 };
 
 function IconTrophy() {
@@ -63,7 +65,7 @@ function IconBars() {
 
 // Average of the per-message totals (each out of 8) as a 0-100 number
 function scorePercent(detail) {
-  const scores = detail?.latest_score || [];
+  const scores = (detail && detail.latest_score) || [];
   if (scores.length === 0) return null;
   const sum = scores.reduce((acc, s) => acc + (s.total_score || 0), 0);
   return Math.round((sum / (scores.length * 8)) * 100);
@@ -71,7 +73,7 @@ function scorePercent(detail) {
 
 // Works if the backend sends an ISO string or a unix timestamp. Returns null if there is none.
 function pickDate(obj) {
-  const raw = obj?.created_at ?? obj?.updated_at ?? obj?.timestamp ?? null;
+  const raw = obj ? (obj.created_at ?? obj.updated_at ?? obj.timestamp ?? null) : null;
   if (raw === null || raw === undefined) return null;
   const d = new Date(typeof raw === "number" && raw < 1e12 ? raw * 1000 : raw);
   return Number.isNaN(d.getTime()) ? null : d;
@@ -80,10 +82,10 @@ function pickDate(obj) {
 function formatWhen(d) {
   const day = d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
   const time = d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
-  return `${day} • ${time}`;
+  return day + " • " + time;
 }
 
-export default function History({ visitorId, refreshKey, onSelectSession }) {
+export default function History({ refreshKey, onSelectSession }) {
   const [sessions, setSessions] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -98,8 +100,8 @@ export default function History({ visitorId, refreshKey, onSelectSession }) {
       setError(null);
       try {
         const [list, st] = await Promise.all([
-          listSessions(visitorId),
-          getStats(visitorId).catch(() => null),
+          listSessions(),
+          getStats().catch(() => null),
         ]);
 
         // Only look inside the 20 most recent so this stays quick
@@ -111,7 +113,7 @@ export default function History({ visitorId, refreshKey, onSelectSession }) {
           const d = details[i].status === "fulfilled" ? details[i].value : null;
           return {
             ...s,
-            scenario: d?.scenario || s.scenario || null,
+            scenario: (d && d.scenario) || s.scenario || null,
             when: pickDate(d) || pickDate(s),
             percent: d ? scorePercent(d) : null,
           };
@@ -135,7 +137,7 @@ export default function History({ visitorId, refreshKey, onSelectSession }) {
     return () => {
       cancelled = true;
     };
-  }, [visitorId, refreshKey]);
+  }, [refreshKey]);
 
   // Last 5 scored sessions, oldest on the left
   const chartData = sessions
@@ -143,16 +145,16 @@ export default function History({ visitorId, refreshKey, onSelectSession }) {
     .slice(0, 5)
     .reverse()
     .map((s, i) => ({
-      label: `#${i + 1}`,
+      label: "#" + (i + 1),
       score: s.percent,
-      title: SCENARIOS[s.scenario]?.label || s.preview,
+      title: SCENARIOS[s.scenario] ? SCENARIOS[s.scenario].label : s.preview,
     }));
 
   const improvement =
     chartData.length >= 2 ? chartData[chartData.length - 1].score - chartData[0].score : null;
 
-  const totalSessions = stats?.total_sessions ?? sessions.length;
-  const avgScore = stats?.avg_score_percent ?? 0;
+  const totalSessions = stats ? stats.total_sessions : sessions.length;
+  const avgScore = stats ? stats.avg_score_percent : 0;
 
   const visible = showAll ? sessions : sessions.slice(0, 3);
 
@@ -197,7 +199,7 @@ export default function History({ visitorId, refreshKey, onSelectSession }) {
               <div className="hs-stat-icon"><IconTrend /></div>
               <div className="hs-stat-label">Improvement</div>
               <div className="hs-stat-value">
-                {improvement === null ? "—" : `${improvement > 0 ? "+" : ""}${improvement}%`}
+                {improvement === null ? "—" : (improvement > 0 ? "+" : "") + improvement + "%"}
               </div>
             </div>
           </div>
@@ -224,24 +226,22 @@ export default function History({ visitorId, refreshKey, onSelectSession }) {
                 !error &&
                 visible.map((s) => {
                   const meta = SCENARIOS[s.scenario];
-                  const Icon = meta?.Icon || IconBriefcase;
+                  const Icon = meta ? meta.Icon : IconBriefcase;
+                  const pillClass =
+                    "hs-pill " + (s.percent === null ? "none" : s.percent >= 75 ? "good" : "");
                   return (
                     <button key={s.id} type="button" className="hs-row" onClick={() => onSelectSession(s.id)}>
-                      <div className={`hs-row-icon ${meta?.tone || ""}`}>
+                      <div className={"hs-row-icon " + (meta ? meta.tone : "")}>
                         <Icon />
                       </div>
                       <div className="hs-row-text">
-                        <span className="hs-row-name">{meta?.label || s.preview}</span>
+                        <span className="hs-row-name">{meta ? meta.label : s.preview}</span>
                         <span className="hs-row-meta">
-                          {s.when ? formatWhen(s.when) : `${s.message_count} messages`}
+                          {s.when ? formatWhen(s.when) : s.message_count + " messages"}
                         </span>
                       </div>
-                      <span
-                        className={`hs-pill ${
-                          s.percent === null ? "none" : s.percent >= 75 ? "good" : ""
-                        }`}
-                      >
-                        {s.percent === null ? "—" : `${s.percent}%`}
+                      <span className={pillClass}>
+                        {s.percent === null ? "—" : s.percent + "%"}
                       </span>
                       <IconChevronRight />
                     </button>
@@ -282,8 +282,8 @@ export default function History({ visitorId, refreshKey, onSelectSession }) {
                         tickLine={false}
                       />
                       <Tooltip
-                        formatter={(v) => [`${v}%`, "Score"]}
-                        labelFormatter={(_, p) => p?.[0]?.payload?.title || ""}
+                        formatter={(v) => [v + "%", "Score"]}
+                        labelFormatter={(_, p) => (p && p[0] && p[0].payload ? p[0].payload.title : "")}
                         contentStyle={{ borderRadius: 12, border: "1px solid #fbd6ba", fontSize: 13 }}
                       />
                       <Area
@@ -298,7 +298,9 @@ export default function History({ visitorId, refreshKey, onSelectSession }) {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
-                <p className="hs-chart-note">Your last {chartData.length} sessions, oldest to newest</p>
+                <p className="hs-chart-note">
+                  {"Your last " + chartData.length + " sessions, oldest to newest"}
+                </p>
               </>
             )}
           </section>
