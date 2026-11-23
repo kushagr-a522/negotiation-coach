@@ -1,14 +1,16 @@
-import os, json
+import os
+import json
 from groq import Groq
-from rubric import get_opponent_persona , NEGOTIATION_RUBRIC
 from dotenv import load_dotenv
+from rubric import get_opponent_persona, get_coach_rubric
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 MODEL = "openai/gpt-oss-120b"
 
-def opponent_agent(conversation_history, scenario="salary"):
-    system_prompt = get_opponent_persona(scenario)
+
+def opponent_agent(conversation_history, scenario="salary", difficulty="medium"):
+    system_prompt = get_opponent_persona(scenario, difficulty)
     messages = [{"role": "system", "content": system_prompt}] + conversation_history
 
     response = client.chat.completions.create(
@@ -20,13 +22,17 @@ def opponent_agent(conversation_history, scenario="salary"):
     return response.choices[0].message.content
 
 
-def coach_agent(last_human_message, conversation_history):
-    context = "\n".join([f"{m['role']}: {m['content']}" for m in conversation_history[-4:]])
-    prompt = f"Conversation so far:\n{context}\n\nRubric:\n{NEGOTIATION_RUBRIC}"
+def coach_agent(last_human_message, conversation_history, focus="general"):
+    context = "\n".join([m["role"] + ": " + m["content"] for m in conversation_history[-4:]])
+    prompt = "Conversation so far:\n" + context + "\n\nRubric:\n" + get_coach_rubric(focus)
+
     fallback = {
-        "summary": "Unable to generate coaching guidance right now.",
-        "recommendations": [],
-        "score": 0,
+        "anchoring": 0,
+        "no_free_concession": 0,
+        "leverage_use": 0,
+        "calm_confidence": 0,
+        "total_score": 0,
+        "feedback": "Could not score this message.",
     }
 
     try:
@@ -39,5 +45,5 @@ def coach_agent(last_human_message, conversation_history):
         )
         return json.loads(response.choices[0].message.content)
     except Exception as e:
-        print(f"coach_agent failed: {e}")
+        print("coach_agent failed:", e)
         return fallback
